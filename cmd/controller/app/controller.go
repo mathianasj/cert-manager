@@ -30,6 +30,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/leaderelection"
@@ -49,6 +50,8 @@ import (
 	logf "github.com/jetstack/cert-manager/pkg/logs"
 	"github.com/jetstack/cert-manager/pkg/metrics"
 	"github.com/jetstack/cert-manager/pkg/util"
+	routeClientSet "github.com/openshift/client-go/route/clientset/versioned"
+	openshiftRouteInformers "github.com/openshift/client-go/route/informers/externalversions"
 )
 
 const controllerAgentName = "cert-manager"
@@ -94,6 +97,10 @@ func Run(opts *options.ControllerOptions, stopCh <-chan struct{}) {
 				log.Error(err, "error starting controller")
 				os.Exit(1)
 			}
+			if iface == nil {
+				log.Info("not starting controller as it's disabled")
+				continue
+			}
 			go func(n string, fn controller.Interface) {
 				defer wg.Done()
 				log.Info("starting controller")
@@ -111,6 +118,7 @@ func Run(opts *options.ControllerOptions, stopCh <-chan struct{}) {
 		log.V(4).Info("starting shared informer factories")
 		ctx.SharedInformerFactory.Start(stopCh)
 		ctx.KubeSharedInformerFactory.Start(stopCh)
+		ctx.OpenShiftRouteInformerFactory.Start(stopCh)
 		wg.Wait()
 		log.Info("control loops exited")
 		ctx.Metrics.Shutdown(metricsServer)
@@ -155,6 +163,12 @@ func buildControllerContext(ctx context.Context, stopCh <-chan struct{}, opts *o
 		return nil, nil, fmt.Errorf("error creating kubernetes client: %s", err.Error())
 	}
 
+	// Create a Route api client
+	routeCl, err := routeClientSet.NewForConfig(kubeCfg)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating openshift route client: %s", err.Error())
+	}
+
 	nameservers := opts.DNS01RecursiveNameservers
 	if len(nameservers) == 0 {
 		nameservers = dnsutil.RecursiveNameservers
@@ -195,6 +209,7 @@ func buildControllerContext(ctx context.Context, stopCh <-chan struct{}, opts *o
 	kubeSharedInformerFactory := kubeinformers.NewSharedInformerFactoryWithOptions(cl, time.Second*30, kubeinformers.WithNamespace(opts.Namespace))
 
 	acmeAccountRegistry := accounts.NewDefaultRegistry()
+	openshiftRouteInformerFactory := openshiftRouteInformers.NewSharedInformerFactoryWithOptions(routeCl, time.Second*30, openshiftRouteInformers.WithNamespace(opts.Namespace))
 
 	return &controller.Context{
 		RootContext:               ctx,
@@ -202,6 +217,7 @@ func buildControllerContext(ctx context.Context, stopCh <-chan struct{}, opts *o
 		RESTConfig:                kubeCfg,
 		Client:                    cl,
 		CMClient:                  intcl,
+		RouteClient:               routeCl,
 		Recorder:                  recorder,
 		KubeSharedInformerFactory: kubeSharedInformerFactory,
 		SharedInformerFactory:     sharedInformerFactory,

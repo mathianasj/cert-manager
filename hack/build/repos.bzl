@@ -1791,8 +1791,8 @@ def go_repositories():
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "k8s.io/api",
-        sum = "h1:fKbCxr+U3fu7k6jB+QeYPD/c6xKYeSJ2KVWmyUypuWM=",
-        version = "v0.18.5",
+        sum = "h1:wG5g5ZmSVgm5B+eHMIbI9EGATS2L8Z72rda19RIEgY8=",
+        version = "v0.18.2",
     )
     go_repository(
         name = "io_k8s_apiextensions_apiserver",
@@ -1807,8 +1807,8 @@ def go_repositories():
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "k8s.io/apimachinery",
-        sum = "h1:Lh6tgsM9FMkC12K5T5QjRm7rDs6aQN5JHkA0JomULDM=",
-        version = "v0.18.5",
+        sum = "h1:44CmtbmkzVDAhCpRVSiP2R5PPrC2RtlIv/MoB8xpdRA=",
+        version = "v0.18.2",
     )
     go_repository(
         name = "io_k8s_apiserver",
@@ -1823,16 +1823,16 @@ def go_repositories():
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "k8s.io/client-go",
-        sum = "h1:cLhGZdOmyPhwtt20Lrb7uAqxxB1uvY+NTmNJvno1oKA=",
-        version = "v0.18.5",
+        sum = "h1:aLB0iaD4nmwh7arT2wIn+lMnAq7OswjaejkQ8p9bBYE=",
+        version = "v0.18.2",
     )
     go_repository(
         name = "io_k8s_code_generator",
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "k8s.io/code-generator",
-        sum = "h1:qMh1fOcU/jOe52e/Sc0ZAnicSk1TCxx81foIYuBIzGk=",
-        version = "v0.18.5",
+        sum = "h1:C1Nn2JiMf244CvBDKVPX0W2mZFJkVBg54T8OV7/Imso=",
+        version = "v0.18.2",
     )
     go_repository(
         name = "io_k8s_component_base",
@@ -2008,8 +2008,8 @@ def go_repositories():
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "golang.org/x/net",
-        sum = "h1:QPwSajcTUrFriMF1nJ3XzgoqakqQEsnZf9LdXdi2nkI=",
-        version = "v0.0.0-20200421231249-e086a090c8fd",
+        sum = "h1:efeOvDhwQ29Dj3SdAV/MJf8oukgn+8D8WgaCaRMchF8=",
+        version = "v0.0.0-20191209160850-c0dbc17a3553",
     )
     go_repository(
         name = "org_golang_x_oauth2",
@@ -2056,8 +2056,8 @@ def go_repositories():
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "golang.org/x/tools",
-        sum = "h1:VvQyQJN0tSuecqgcIxMWnnfG5kSmgy9KZR9sW3W5QeA=",
-        version = "v0.0.0-20191216052735-49a3e744a425",
+        sum = "h1:6VZw2h4iwEB4GwgQU3Jvcsm8l9+yReTrErAEK1k6AC4=",
+        version = "v0.0.0-20200115044656-831fdb1e1868",
     )
     go_repository(
         name = "org_gonum_v1_gonum",
@@ -2684,7 +2684,31 @@ def go_repositories():
         version = "v0.0.0-20160121211510-db5cfe13f5cc",
     )
     go_repository(
-        name = "org_golang_x_mod",
+        name = "com_github_openshift_client_go",
+        build_file_generation = "on",
+        build_file_proto_mode = "disable",
+        importpath = "github.com/openshift/client-go",
+        sum = "h1:23Iu+lDIOpLhRbBBwLyaVm1X30nhjahFrtC0Sc4krLI=",
+        version = "v0.0.0-20200326152330-3fd9fa394658",
+    )
+    go_repository(
+        name = "com_github_openshift_api",
+        build_file_generation = "on",
+        build_file_proto_mode = "disable",
+        importpath = "github.com/openshift/api",
+        sum = "h1:MjlSkQrMZAygwnUO3Jr52DRvPpqgl4seKlfTO9NZwXc=",
+        version = "v0.0.0-20200422085536-f24cbf292bdd",
+    )
+    go_repository(
+        name = "com_github_openshift_build_machinery_go",
+        build_file_generation = "on",
+        build_file_proto_mode = "disable",
+        importpath = "github.com/openshift/build-machinery-go",
+        sum = "h1:V4E6yt4XWiBEPKnJbs/E8pgUq9AjZqzQfsL3eeT84Qs=",
+        version = "v0.0.0-20200211121458-5e3d6e570160",
+    )
+    go_repository(
+                name = "org_golang_x_mod",
         build_file_generation = "on",
         build_file_proto_mode = "disable",
         importpath = "golang.org/x/mod",
