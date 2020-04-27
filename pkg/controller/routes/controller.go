@@ -54,22 +54,22 @@ type routeRequestManager struct {
 	clock clock.Clock
 }
 
-// // Register registers and constructs the controller using the provided context.
-// // It returns the workqueue to be used to enqueue items, a list of
-// // InformerSynced functions that must be synced, or an error.
+// Register registers and constructs the controller using the provided context.
+// It returns the workqueue to be used to enqueue items, a list of
+// InformerSynced functions that must be synced, or an error.
 func (c *routeRequestManager) Register(ctx *controllerpkg.Context) (workqueue.RateLimitingInterface, []cache.InformerSynced, error) {
-	// 	// construct a new named logger to be reused throughout the controller
-	// 	log := logf.FromContext(ctx.RootContext, ControllerName)
+	// construct a new named logger to be reused throughout the controller
+	log := logf.FromContext(ctx.RootContext, ControllerName)
 
-	// 	// create a queue used to queue up items to be processed
+	// create a queue used to queue up items to be processed
 	c.queue = workqueue.NewNamedRateLimitingQueue(workqueue.NewItemExponentialFailureRateLimiter(time.Second*5, time.Minute*30), ControllerName)
 
 	// 	// obtain references to all the informers used by this controller
 	routeInformer := ctx.OpenShiftRouteInformerFactory.Route()
 	secretsInformer := ctx.KubeSharedInformerFactory.Core().V1().Secrets()
 
-	// 	// build a list of InformerSynced functions that will be returned by the Register method.
-	// 	// the controller will only begin processing items once all of these informers have synced.
+	// build a list of InformerSynced functions that will be returned by the Register method.
+	// the controller will only begin processing items once all of these informers have synced.
 	mustSync := []cache.InformerSynced{
 		secretsInformer.Informer().HasSynced,
 		routeInformer.V1().Routes().Informer().HasSynced,
@@ -79,10 +79,11 @@ func (c *routeRequestManager) Register(ctx *controllerpkg.Context) (workqueue.Ra
 	c.routeLister = routeInformer.V1().Routes().Lister()
 	c.secretLister = secretsInformer.Lister()
 
-	// 	// register handler functions
+	// register handler functions
 	routeInformer.V1().Routes().Informer().AddEventHandler(&controllerpkg.QueuingEventHandler{Queue: c.queue})
+	// secretsInformer.Informer().AddEventHandler(&controllerpkg.BlockingEventHandler{WorkFunc: secretResourceHandler(log, c.routeLister, c.queue)})
 
-	// 	// clock is used to determine whether certificates need renewal
+	// clock is used to determine whether certificates need renewal
 	c.clock = clock.RealClock{}
 
 	// recorder records events about resources to the Kubernetes api

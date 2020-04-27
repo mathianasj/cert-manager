@@ -32,3 +32,5 @@ func IsRouteResourceAvailable(ctx *controllerpkg.Context) (bool, error) {
 	}
 	return false, nil
 }
+
+var keyFunc = controllerpkg.KeyFunc
